@@ -1,6 +1,6 @@
 # jpg-press
 
-Conversor e compressor de imagens client-side. Qualquer formato entra — PNG, WebP, o que for — e sai em JPG, no tamanho que você mandar.
+Ferramenta client-side para conversão e compressão de imagens. Aceita PNG, WebP e outros formatos como entrada e gera arquivos JPG otimizados, com redução perceptível de tamanho.
 
 Sem backend, sem upload, sem dependências externas.
 
@@ -22,8 +22,8 @@ cd jpg-press
 Abra `index.html` diretamente no navegador. Nenhum servidor ou build necessário.
 
 1. Selecione arquivos pelo botão ou arraste para a área de drop
-2. Prensa individualmente ou use "Prensar Todas"
-3. Cada card mostra o tamanho antes → depois, com a redução em %
+2. Converta individualmente ou use "Prensar Todas"
+3. Cada card exibe o tamanho original e o tamanho final, com o percentual de redução
 4. Baixe os arquivos convertidos
 
 ---
@@ -82,4 +82,3 @@ MIT — uso livre para fins pessoais e comerciais.
 
 ---
 
-Criado por [devgbr86](https://github.com/devgbr86) — 2026.
