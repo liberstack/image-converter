@@ -4,7 +4,7 @@
 <head>
      <meta charset="utf-8" />
      <meta name="viewport" content="width=device-width,initial-scale=1" />
-     <title>img-converter</title>
+     <title>jpg-press</title>
      <link rel="icon" type="image/png" href="./cube_icon.png" />
      <link rel="preconnect" href="https://fonts.googleapis.com">
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +17,8 @@
 
      <header class="app-header">
           <div>
-               <h1>img-converter</h1>
-               <p>PNG · JPG · WebP — processamento local, zero upload</p>
+               <h1>jpg-press</h1>
+               <p>PNG · WebP · qualquer imagem → JPG comprimido — processamento local, zero upload</p>
           </div>
           <span class="badge">client-side only</span>
      </header>
@@ -36,16 +36,8 @@
           </div>
 
           <div class="controls">
-               <div class="control-group">
-                    <label for="format">Formato</label>
-                    <select id="format">
-                         <option value="image/png">PNG</option>
-                         <option value="image/jpeg">JPG</option>
-                         <option value="image/webp">WebP</option>
-                    </select>
-               </div>
                <div class="spacer"></div>
-               <button id="convert" class="action-btn convert-btn">Converter Todas</button>
+               <button id="convert" class="action-btn convert-btn">Prensar Todas</button>
                <button id="downloadAll" class="action-btn download-all-btn">Baixar Todas</button>
           </div>
 
@@ -54,11 +46,15 @@
      </main>
 
      <footer class="app-footer">
-          <span>Conversão via <code>&lt;canvas&gt;</code> + <code>toBlob()</code></span>
+          <span>Compressão via <code>&lt;canvas&gt;</code> + <code>toBlob('image/jpeg')</code></span>
           <a href="https://github.com/devgbr86" target="_blank" rel="noopener">@devgbr86</a>
      </footer>
 
-     <script type="module" src="./js/main.js"></script>
+     <script src="./js/utils.js"></script>
+     <script src="./js/store.js"></script>
+     <script src="./js/imageService.js"></script>
+     <script src="./js/ui.js"></script>
+     <script src="./js/main.js"></script>
 </body>
 
 </html>

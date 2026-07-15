@@ -1,4 +1,4 @@
-export const store = {
+const Store = {
   files: [],
 
   add(entry) {

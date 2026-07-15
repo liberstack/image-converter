@@ -1,81 +1,104 @@
-import { escapeHtml, formatBytes } from "./utils.js";
+const UI = (() => {
+  const { escapeHtml, formatBytes, reductionPercent } = Utils;
 
-// ── thumb ──
+  // ── thumb ──
 
-export function createThumb(entry, { onConvert, onRemove }) {
-  const el = document.createElement("div");
-  el.className = "thumb";
-  el.dataset.id = entry.id;
+  function createThumb(entry, { onConvert, onRemove }) {
+    const el = document.createElement("div");
+    el.className = "thumb";
+    el.dataset.id = entry.id;
 
-  el.innerHTML = `
-    <img class="preview" alt="${escapeHtml(entry.file.name)}">
-    <div class="meta">
-      <strong>${escapeHtml(entry.file.name)}</strong>
-      <div>${formatBytes(entry.file.size)}</div>
-    </div>
-    <div class="thumb-actions">
-      <button class="thumb-btn convert">Converter</button>
-      <a class="thumb-btn download" style="display:none">Baixar</a>
-      <button class="thumb-btn remove">Remover</button>
-    </div>
-  `;
+    el.innerHTML = `
+      <img class="preview" alt="${escapeHtml(entry.file.name)}">
+      <div class="meta">
+        <strong>${escapeHtml(entry.file.name)}</strong>
+        <div class="size-line">
+          <span class="before">${formatBytes(entry.file.size)}</span>
+        </div>
+      </div>
+      <div class="thumb-actions">
+        <button class="thumb-btn convert">Prensar</button>
+        <a class="thumb-btn download" style="display:none">Baixar</a>
+        <button class="thumb-btn remove">Remover</button>
+      </div>
+    `;
 
-  entry._el = el;
+    entry._el = el;
 
-  el.querySelector(".convert").addEventListener("click", () =>
-    onConvert(entry),
-  );
-  el.querySelector(".remove").addEventListener("click", () => {
-    onRemove(entry);
-    el.remove();
-  });
+    el.querySelector(".convert").addEventListener("click", () =>
+      onConvert(entry),
+    );
+    el.querySelector(".remove").addEventListener("click", () => {
+      onRemove(entry);
+      el.remove();
+    });
 
-  return el;
-}
+    return el;
+  }
 
-export function setThumbSrc(entry, dataUrl) {
-  if (!entry._el) return;
-  entry._el.querySelector(".preview").src = dataUrl;
-}
+  function setThumbSrc(entry, dataUrl) {
+    if (!entry._el) return;
+    entry._el.querySelector(".preview").src = dataUrl;
+  }
 
-export function updateDownloadLink(entry) {
-  if (!entry._el) return;
-  const link = entry._el.querySelector(".download");
-  link.href = URL.createObjectURL(entry.convertedBlob);
-  link.download = entry.outputName;
-  link.style.display = "";
-}
+  function updateDownloadLink(entry) {
+    if (!entry._el) return;
 
-// ── dropzone ──
+    const link = entry._el.querySelector(".download");
+    link.href = URL.createObjectURL(entry.convertedBlob);
+    link.download = entry.outputName;
+    link.style.display = "";
 
-export function initDropzone(onFiles) {
-  const input = document.getElementById("file");
-  const drop = document.getElementById("drop");
+    const sizeLine = entry._el.querySelector(".size-line");
+    const pct = reductionPercent(entry.file.size, entry.convertedBlob.size);
+    sizeLine.innerHTML = `
+      <span class="before">${formatBytes(entry.file.size)}</span>
+      <span class="arrow">→</span>
+      <span class="after">${formatBytes(entry.convertedBlob.size)}</span>
+      ${pct > 0 ? `<span class="saved">-${pct}%</span>` : ""}
+    `;
+  }
 
-  input.addEventListener("change", (e) => {
-    onFiles(e.target.files);
-    input.value = "";
-  });
+  // ── dropzone ──
 
-  drop.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    drop.classList.add("dragover");
-  });
+  function initDropzone(onFiles) {
+    const input = document.getElementById("file");
+    const drop = document.getElementById("drop");
 
-  drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
+    input.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files);
+      input.value = "";
+      onFiles(files);
+    });
 
-  drop.addEventListener("drop", (e) => {
-    e.preventDefault();
-    drop.classList.remove("dragover");
-    onFiles(e.dataTransfer.files);
-  });
-}
+    drop.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      drop.classList.add("dragover");
+    });
 
-// ── controls ──
+    drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
 
-export function initControls({ onConvertAll, onDownloadAll }) {
-  document.getElementById("convert").addEventListener("click", onConvertAll);
-  document
-    .getElementById("downloadAll")
-    .addEventListener("click", onDownloadAll);
-}
+    drop.addEventListener("drop", (e) => {
+      e.preventDefault();
+      drop.classList.remove("dragover");
+      onFiles(Array.from(e.dataTransfer.files));
+    });
+  }
+
+  // ── controls ──
+
+  function initControls({ onConvertAll, onDownloadAll }) {
+    document.getElementById("convert").addEventListener("click", onConvertAll);
+    document
+      .getElementById("downloadAll")
+      .addEventListener("click", onDownloadAll);
+  }
+
+  return {
+    createThumb,
+    setThumbSrc,
+    updateDownloadLink,
+    initDropzone,
+    initControls,
+  };
+})();

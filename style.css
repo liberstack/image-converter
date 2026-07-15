@@ -18,6 +18,7 @@
      --text-muted: #666;
      --text-dim: #444;
      --danger: #ff4d4d;
+     --good: #6be675;
      --radius: 4px;
      --mono: 'Space Mono', monospace;
      --sans: 'DM Sans', sans-serif;
@@ -126,7 +127,15 @@ main {
 }
 
 .upload-btn input {
-     display: none;
+     position: absolute;
+     width: 1px;
+     height: 1px;
+     padding: 0;
+     margin: -1px;
+     overflow: hidden;
+     clip: rect(0, 0, 0, 0);
+     white-space: nowrap;
+     border: 0;
 }
 
 .drop-zone {
@@ -173,23 +182,6 @@ main {
      color: var(--text-muted);
      text-transform: uppercase;
      letter-spacing: 0.06em;
-}
-
-select {
-     background: var(--surface-2);
-     color: var(--text);
-     border: 1px solid var(--border-mid);
-     border-radius: var(--radius);
-     font-family: var(--mono);
-     font-size: 0.8rem;
-     padding: 0.35rem 0.6rem;
-     cursor: pointer;
-     outline: none;
-     transition: border-color 0.15s;
-}
-
-select:focus {
-     border-color: var(--accent);
 }
 
 .spacer {
@@ -290,6 +282,26 @@ select:focus {
      font-size: 0.7rem;
      color: var(--text-muted);
      font-family: var(--mono);
+}
+
+.size-line {
+     display: flex;
+     align-items: center;
+     gap: 0.3rem;
+     margin-top: 2px;
+}
+
+.size-line .arrow {
+     color: var(--text-dim);
+}
+
+.size-line .after {
+     color: var(--text);
+}
+
+.size-line .saved {
+     color: var(--good);
+     font-weight: 700;
 }
 
 .thumb-actions {

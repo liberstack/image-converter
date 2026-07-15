@@ -1,28 +1,29 @@
-# img-converter
+# jpg-press
 
-Conversor de imagens client-side entre PNG, JPG e WebP.
+Conversor e compressor de imagens client-side. Qualquer formato entra — PNG, WebP, o que for — e sai em JPG, no tamanho que você mandar.
+
 Sem backend, sem upload, sem dependências externas.
 
 ---
 
 ## Como funciona
 
-O arquivo é lido via `createImageBitmap()`, renderizado em um `<canvas>` e exportado no formato escolhido através de `canvas.toBlob()`. Todo o processamento ocorre no navegador.
+O arquivo é lido via `createImageBitmap()`, desenhado em um `<canvas>` sobre um fundo branco (JPG não tem canal alpha) e exportado como JPG através de `canvas.toBlob()`, com qualidade fixa em 80%. Todo o processamento ocorre no navegador.
 
 ---
 
 ## Uso
 
 ```
-git clone https://github.com/devgbr86/img-converter.git
-cd img-converter
+git clone https://github.com/devgbr86/jpg-press.git
+cd jpg-press
 ```
 
 Abra `index.html` diretamente no navegador. Nenhum servidor ou build necessário.
 
 1. Selecione arquivos pelo botão ou arraste para a área de drop
-2. Escolha o formato de saída (PNG, JPG ou WebP)
-3. Converta individualmente ou use "Converter Todas"
+2. Prensa individualmente ou use "Prensar Todas"
+3. Cada card mostra o tamanho antes → depois, com a redução em %
 4. Baixe os arquivos convertidos
 
 ---
@@ -30,29 +31,24 @@ Abra `index.html` diretamente no navegador. Nenhum servidor ou build necessário
 ## Arquitetura
 
 ```
-src/
-  main.js              — orquestrador, ponto de entrada
-  store/
-    store.js           — estado global das imagens carregadas
-  services/
-    imageService.js    — loadImage, convertImage, generateThumbnail
-  ui/
-    dropzone.js        — captura de arquivos (input + drag and drop)
-    controls.js        — botões de ação global
-    thumb.js           — criação e atualização dos cards de preview
-  utils/
-    escapeHtml.js      — sanitização de strings para o DOM
-  styles/
-    main.css           — estilos globais
+index.html          — estrutura da página, carrega os scripts em ordem
+style.css            — estilos globais
+utils.js             — escapeHtml, formatBytes, reductionPercent
+store.js             — estado global das imagens carregadas
+imageService.js       — loadImage, convertToJpg, generateThumbnail
+ui.js                — thumbs, dropzone, controles
+main.js              — orquestrador, ponto de entrada
 ```
 
-A separação entre `services/` e `utils/` é intencional: `services/` contém lógica de domínio da aplicação (conversão de imagem), `utils/` contém apenas funções puras sem contexto de negócio.
+A separação entre `imageService.js` e `utils.js` é intencional: o primeiro contém lógica de domínio (conversão e compressão de imagem), o segundo só funções puras sem contexto de negócio.
+
+Os arquivos são scripts comuns (não ES modules) carregados em ordem via `<script>`, cada um expondo um namespace global (`Utils`, `Store`, `ImageService`, `UI`). Isso é proposital: módulos ES bloqueiam via CORS quando o HTML é aberto direto do disco (`file://`), então essa estrutura garante que o projeto funcione só com duplo-clique no `index.html`, sem precisar de servidor local.
 
 ---
 
 ## Tecnologias
 
-- HTML5, CSS3, JavaScript ES6 (módulos nativos)
+- HTML5, CSS3, JavaScript ES6, scripts globais (sem `import`/`export`, funciona via `file://`)
 - Canvas API — `createImageBitmap()`, `toBlob()`
 - `URL.createObjectURL()` com `revokeObjectURL()` para evitar memory leak
 
@@ -60,9 +56,10 @@ A separação entre `services/` e `utils/` é intencional: `services/` contém l
 
 ## Observações
 
-- Metadados EXIF não são preservados na conversão
-- Qualidade de saída padrão: 1.0 (máxima)
-- WebP requer navegadores modernos (Chrome 32+, Firefox 65+, Safari 14+)
+- Formato de saída é sempre JPG — essa é a única coisa que a ferramenta faz, de propósito
+- Transparência de PNG/WebP vira fundo branco na conversão
+- Metadados EXIF não são preservados
+- Qualidade fixa em 80%
 
 ---
 
@@ -72,4 +69,4 @@ MIT — uso livre para fins pessoais e comerciais.
 
 ---
 
-Criado por [devgbr86](https://github.com/devgbr86) — 2025.
+Criado por [devgbr86](https://github.com/devgbr86) — 2026.
